@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>МОЙ КАЛЬКУЛЯТОР</title>
+    
+    <link rel="apple-touch-icon" href="фото.jpg">
+    <link rel="icon" href="фото.jpg">
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            display: flex; flex-direction: column; justify-content: center; align-items: center; 
+            height: 100vh; margin: 0; background: #000; color: white;
+        }
+        .calc { 
+            width: 90%; max-width: 360px; background: #1c1c1e; 
+            padding: 20px; border-radius: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+        }
+        #display { 
+            width: 100%; height: 100px; font-size: 50px; text-align: right; 
+            margin-bottom: 10px; padding: 10px; background: transparent; 
+            border: none; color: white; outline: none; pointer-events: none;
+        }
+        .buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+        button { 
+            aspect-ratio: 1; border-radius: 50%; border: none; 
+            font-size: 24px; font-weight: 500; cursor: pointer; transition: filter 0.1s;
+        }
+        button:active { filter: brightness(1.5); }
+        
+        /* Цвета как в iOS */
+        .num { background: #333; color: white; }
+        .op { background: #ff9f0a; color: white; }
+        .spec { background: #a5a5a5; color: black; }
+        
+        .zero { grid-column: span 2; aspect-ratio: auto; border-radius: 50px; text-align: left; padding-left: 25px; }
+
+        /* Кнопка сохранения файла */
+        .save-box { margin-top: 25px; }
+        .save-btn {
+            background: rgba(255,255,255,0.1); color: #888; border: 1px solid #444;
+            padding: 8px 15px; border-radius: 8px; font-size: 12px; cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="calc">
+        <input type="text" id="display" placeholder="0" readonly>
+        <div class="buttons">
+            <button class="spec" onclick="clearDisp()">AC</button>
+            <button class="spec" onclick="backspace()">←</button>
+            <button class="spec" onclick="addToDisp('%')">%</button>
+            <button class="op" onclick="addToDisp('/')">÷</button>
+            
+            <button class="num" onclick="addToDisp('7')">7</button>
+            <button class="num" onclick="addToDisp('8')">8</button>
+            <button class="num" onclick="addToDisp('9')">9</button>
+            <button class="op" onclick="addToDisp('*')">×</button>
+            
+            <button class="num" onclick="addToDisp('4')">4</button>
+            <button class="num" onclick="addToDisp('5')">5</button>
+            <button class="num" onclick="addToDisp('6')">6</button>
+            <button class="op" onclick="addToDisp('-')">−</button>
+            
+            <button class="num" onclick="addToDisp('1')">1</button>
+            <button class="num" onclick="addToDisp('2')">2</button>
+            <button class="num" onclick="addToDisp('3')">3</button>
+            <button class="op" onclick="addToDisp('+')">+</button>
+            
+            <button class="num zero" onclick="addToDisp('0')">0</button>
+            <button class="num" onclick="addToDisp('.')">,</button>
+            <button class="op" onclick="calculate()">=</button>
+        </div>
+    </div>
+
+    <div class="save-box">
+        <button class="save-btn" onclick="saveMe()">СКАЧАТЬ НА ТЕЛЕФОН</button>
+    </div>
+
+    <script>
+        const disp = document.getElementById('display');
+        function addToDisp(v) { disp.value += v; }
+        function clearDisp() { disp.value = ''; }
+        function backspace() { disp.value = disp.value.slice(0, -1); }
+        function calculate() {
+            try {
+                let res = eval(disp.value.replace('÷', '/').replace('×', '*').replace('%', '/100'));
+                disp.value = Number.isInteger(res) ? res : res.toFixed(4).replace(/\.?0+$/, "");
+            } catch { disp.value = "Ошибка"; }
+        }
+
+        function saveMe() {
+            const blob = new Blob([document.documentElement.outerHTML], {type: 'text/html'});
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'calc.html';
+            a.click();
+        }
+    </script>
+</body>
+</html>
